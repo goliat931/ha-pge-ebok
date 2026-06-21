@@ -17,25 +17,14 @@ Najprostszą metodą instalacji jest wykorzystanie HACS (Home Assistant Communit
 7. Kliknij **Zainstaluj** (Install).
 8. Po poprawnej instalacji wymagany jest **restart Home Assistant**.
 
-## Konfiguracja (configuration.yaml)
+## Konfiguracja (Interfejs graficzny)
 
-Obecnie integracja konfigurowana jest bezpośrednio w pliku `configuration.yaml`. Należy podać dane logowania, którymi logujesz się do portalu PGE eBOK (ebok.gkpge.pl).
+Konfiguracja odbywa się przez interfejs graficzny Home Assistanta:
 
-Dodaj poniższy fragment do pliku `configuration.yaml`:
-
-```yaml
-sensor:
-  - platform: pge_ebok
-    username: "TWOJ_ADRES_EMAIL"
-    password: "TWOJE_HASLO"
-```
-
-Po dodaniu wpisu, zapisz plik i **zrestartuj Home Assistant**.
-
-### Zmienne konfiguracyjne:
-- `platform`: (wymagane) musi być ustawione na `pge_ebok`
-- `username`: (wymagane) Twój adres e-mail, będący loginem do profilu PGE eBOK.
-- `password`: (wymagane) Twoje hasło do profilu PGE eBOK.
+1. Przejdź do **Ustawienia** -> **Urządzenia i usługi**.
+2. Kliknij **Dodaj integrację** w prawym dolnym rogu.
+3. Wyszukaj **PGE eBOK**.
+4. Wprowadź dane logowania do portalu PGE eBOK (ebok.gkpge.pl) i zatwierdź.
 
 ## Uwagi
 Integracja używa techniki "web scraping", co oznacza, że w przypadku zmian na stronie internetowej PGE eBOK (np. zmiany formularza logowania, struktury widoku), integracja może przestać działać i wymagać aktualizacji kodu.
