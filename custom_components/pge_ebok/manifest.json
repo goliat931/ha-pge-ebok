@@ -1,0 +1,10 @@
+{
+  "domain": "pge_ebok",
+  "name": "PGE eBOK",
+  "version": "1.0.0",
+  "requirements": [
+    "beautifulsoup4",
+    "requests"
+  ],
+  "iot_class": "cloud_polling"
+}
