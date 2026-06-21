@@ -1,6 +1,6 @@
 import logging
 
-from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_USERNAME
 from homeassistant.core import HomeAssistant
@@ -29,9 +29,11 @@ class PgeEbokSensor(CoordinatorEntity, SensorEntity):
         """Inicjalizacja sensora."""
         super().__init__(coordinator)
         self._username = config_entry.data[CONF_USERNAME]
-        self._attr_name = "PGE eBOK Saldo"
+        self._attr_has_entity_name = True
+        self._attr_name = "Saldo"
         self._attr_native_unit_of_measurement = "PLN"
         self._attr_device_class = SensorDeviceClass.MONETARY
+        self._attr_state_class = SensorStateClass.TOTAL
         self._attr_icon = "mdi:flash"
         self._attr_unique_id = f"pge_ebok_{self._username}"
 
