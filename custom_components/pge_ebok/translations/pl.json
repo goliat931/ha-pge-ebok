@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Połącz z PGE eBOK",
+        "description": "Wprowadź swoje dane logowania do PGE eBOK.",
+        "data": {
+          "username": "Nazwa użytkownika (Email)",
+          "password": "Hasło"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nie udało się połączyć",
+      "invalid_auth": "Błędne uwierzytelnienie",
+      "unknown": "Nieoczekiwany błąd"
+    },
+    "abort": {
+      "already_configured": "Konto jest już skonfigurowane"
+    }
+  }
+}

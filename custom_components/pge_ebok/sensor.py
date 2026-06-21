@@ -6,28 +6,28 @@ import requests
 from bs4 import BeautifulSoup
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
-import homeassistant.helpers.config_validation as cv
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = "pge_ebok"
 URL = "https://ebok.gkpge.pl/ebok/profil/logowanie.xhtml"
 
 SCAN_INTERVAL = timedelta(hours=6)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Required(CONF_USERNAME): cv.string,
-    vol.Required(CONF_PASSWORD): cv.string,
-})
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up the PGE eBOK sensor from a config entry."""
+    username = config_entry.data[CONF_USERNAME]
+    password = config_entry.data[CONF_PASSWORD]
 
-def setup_platform(hass, config, add_entities, discovery_info=None):
-    """Konfiguracja platformy sensora PGE."""
-    username = config.get(CONF_USERNAME)
-    password = config.get(CONF_PASSWORD)
-
-    add_entities([PgeEbokSensor(username, password)], True)
+    async_add_entities([PgeEbokSensor(username, password)], True)
 
 class PgeEbokSensor(SensorEntity):
     """Klasa reprezentująca sensor salda PGE eBOK."""
