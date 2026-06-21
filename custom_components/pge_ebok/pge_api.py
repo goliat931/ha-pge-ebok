@@ -23,12 +23,15 @@ class PgeEbokApi:
         self._username = username
         self._password = password
         self._session = session
+        self._headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+        }
 
     async def get_balance(self) -> float:
         """Fetch the current balance from the portal."""
         try:
             # 1. Fetch ViewState
-            async with self._session.get(URL, timeout=15) as response:
+            async with self._session.get(URL, headers=self._headers, timeout=15) as response:
                 response.raise_for_status()
                 html = await response.text()
 
@@ -49,7 +52,7 @@ class PgeEbokApi:
                 'javax.faces.ViewState': view_state
             }
 
-            async with self._session.post(URL, data=payload, timeout=15) as res:
+            async with self._session.post(URL, data=payload, headers=self._headers, timeout=15) as res:
                 res.raise_for_status()
                 res_html = await res.text()
 
@@ -60,30 +63,30 @@ class PgeEbokApi:
             # Assuming the form element specific to logged-in user is missing.
             container = soup_logged.find("div", {"id": "formNaleznosc:idSaldoNaDzien_content"})
 
-            if container:
-                label = container.find("label")
-                if label:
-                    # Clean the text, remove spaces and replace comma with dot
-                    saldo_str = label.text.strip().replace(' ', '').replace(',', '.')
-
-                    # Extract numerical value
-                    match = re.search(r'-?\d+(\.\d+)?', saldo_str)
-                    if match:
-                        return float(match.group())
-                    else:
-                        raise PgeEbokApiError(f"Nie udało się przekonwertować salda na liczbę: {saldo_str}")
-                else:
-                    raise PgeEbokApiError("Nie znaleziono etykiety z saldem w kontenerze.")
-            else:
+            if not container:
                 # If we didn't find the balance container, it might mean we didn't login properly.
                 raise PgeEbokAuthError("Nie znaleziono kontenera salda. Sprawdź, czy dane logowania są poprawne.")
 
+            label = container.find("label")
+            # Fallback to the container's full text if no label is found inside
+            text_source = label.text if label else container.text
+
+            # Clean the text, remove spaces and replace comma with dot
+            saldo_str = text_source.strip().replace(' ', '').replace(',', '.')
+
+            # Extract numerical value
+            match = re.search(r'-?\d+(\.\d+)?', saldo_str)
+            if match:
+                return float(match.group())
+
+            raise PgeEbokApiError(f"Nie udało się przekonwertować salda na liczbę: {saldo_str}")
+
         except aiohttp.ClientError as e:
-            raise PgeEbokApiError(f"Błąd połączenia z portalem PGE: {e}")
+            raise PgeEbokApiError(f"Błąd połączenia z portalem PGE: {e}") from e
         except Exception as e:
             if isinstance(e, (PgeEbokApiError, PgeEbokAuthError)):
                 raise
-            raise PgeEbokApiError(f"Nieoczekiwany błąd komunikacji: {e}")
+            raise PgeEbokApiError(f"Nieoczekiwany błąd komunikacji: {e}") from e
 
     async def test_authentication(self) -> bool:
         """Test if the provided credentials are valid."""
@@ -94,4 +97,4 @@ class PgeEbokApi:
             return False
         except Exception as e:
             # Re-raise non-auth errors
-            raise PgeEbokApiError(f"Błąd testowania uwierzytelnienia: {e}")
+            raise PgeEbokApiError(f"Błąd testowania uwierzytelnienia: {e}") from e
