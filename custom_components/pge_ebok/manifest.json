@@ -10,5 +10,6 @@
   "issue_tracker": "https://github.com/goliat931/ha-pge-ebok/issues",
   "codeowners": [
     "@goliat931"
-  ]
+  ],
+  "documentation": "https://github.com/goliat931/ha-pge-ebok"
 }
