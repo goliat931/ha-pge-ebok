@@ -28,3 +28,11 @@ Konfiguracja odbywa się przez interfejs graficzny Home Assistanta:
 
 ## Uwagi
 Integracja używa techniki "web scraping", co oznacza, że w przypadku zmian na stronie internetowej PGE eBOK (np. zmiany formularza logowania, struktury widoku), integracja może przestać działać i wymagać aktualizacji kodu.
+
+## Rozwiązywanie problemów (Troubleshooting)
+
+### Brak integracji w wyszukiwarce HACS pomimo poprawnego dodania repozytorium
+Jeśli repozytorium zostało dodane do HACS przed pojawieniem się pierwszego wydania (Release), HACS mógł zapisać w pamięci podręcznej (cache) pustą odpowiedź. Aby to rozwiązać:
+1. Usuń `PGE eBOK` z sekcji *Niestandardowe repozytoria* (Custom repositories) w HACS.
+2. Wyczyść pamięć podręczną przeglądarki (frontend cache).
+3. Dodaj ponownie repozytorium `goliat931/ha-pge-ebok` jako *Integrację*, co wymusi pobranie najnowszych danych.
