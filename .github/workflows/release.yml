@@ -15,8 +15,13 @@ jobs:
       - name: Get version from manifest
         id: version
         run: |
-          VERSION=$(jq -r '.version' custom_components/pge_ebok/manifest.json)
+          BASE_VERSION=$(jq -r '.version' custom_components/pge_ebok/manifest.json)
+          VERSION="${BASE_VERSION}.${{ github.run_number }}"
           echo "version=v$VERSION" >> "$GITHUB_OUTPUT"
+
+          # Update the manifest with the exact version being released
+          jq ".version = \"$VERSION\"" custom_components/pge_ebok/manifest.json > custom_components/pge_ebok/manifest.json.tmp
+          mv custom_components/pge_ebok/manifest.json.tmp custom_components/pge_ebok/manifest.json
 
       - name: Create ZIP archive
         run: |
